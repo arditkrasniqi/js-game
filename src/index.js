@@ -1,3 +1,9 @@
-import Player from './Player';
+import Player from './players/Player';
+const player = new Player(200, 200, 20, 20, 'black', 5, 5);
+player.update();
 
-const player = new Player();
+function animate() {
+    requestAnimationFrame(animate);
+    player.update();
+}
+animate();
