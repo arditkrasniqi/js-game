@@ -1,4 +1,5 @@
 import Canvas from '../Canvas';
+import kd from 'keydrown';
 
 class Player {
     constructor(x, y, w, h, col, xvel, yvel) {

@@ -32,5 +32,7 @@
     "webpack": "^1.12.11",
     "webpack-dev-server": "^1.14.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "keydrown": "^1.2.3"
+  }
 }
