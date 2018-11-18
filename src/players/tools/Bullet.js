@@ -1,29 +1,34 @@
-import Canvas from '../../Canvas';
+import kd from 'keydrown';
 
 class Bullet {
-    constructor(x, y) {
+    constructor(context, cW, cH, x, y) {
         this.x = x;
         this.y = y;
-        this.radius = 3;
+        this.width = 2;
+        this.height = 25;
+        this.radius = 100;
         this.color = 'red';
+        this.context = context;
+        this.cWidth = cW;
+        this.cHeight = cH;
+        this.xVel = 15;
+        this.yVel = 15;
+        this.init();
+    }
 
-        this.canvas = new Canvas();
-        this.context = this.canvas.getContext('2d');
+    init() {
         this.draw();
     }
 
     draw() {
         this.context.beginPath();
         this.context.fillStyle = this.color;
-        this.context.arc(this.x, this.y, this.radius, Math.PI * 2, 0, false);
+        this.context.rect(this.x, this.y, this.width, this.height);
         this.context.fill();
     }
 
     update() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        if (this.x > 0) {
-            this.x -= 20;
-        }
+        this.y -= this.yVel;
         this.draw();
     }
 }

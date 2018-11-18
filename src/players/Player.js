@@ -1,5 +1,6 @@
 import Canvas from '../Canvas';
 import kd from 'keydrown';
+import Bullet from './tools/Bullet';
 
 class Player {
     constructor(x, y, w, h, col, xvel, yvel) {
@@ -8,8 +9,18 @@ class Player {
         this.width = w;
         this.height = h;
         this.color = col;
+        this.velocity = {
+            x: xvel,
+            y: yvel,
+            oldX: xvel,
+            oldY: yvel
+        }
+        this.shots = 0;
         this.xVel = xvel;
         this.yVel = yvel;
+        this.bullets = [];
+        this.bulletIndex = 0;
+        this.bulletDirection = 'right';
 
         this.canvas = new Canvas();
         this.context = this.canvas.getContext('2d');
@@ -20,15 +31,24 @@ class Player {
         this.draw();
         kd.RIGHT.down(() => {
             this.moveRight();
+            this.bulletDirection = 'right';
         });
         kd.LEFT.down(() => {
             this.moveLeft();
+            this.bulletDirection = 'left';
         });
         kd.UP.down(() => {
-            this.moveUp();
+            if (this.y >= window.innerHeight / 2) {
+                this.moveUp();
+            }
         });
         kd.DOWN.down(() => {
             this.moveDown();
+        });
+        kd.SPACE.up(() => {
+            // if (this.shots++ <= 10) {
+            this.bullets[this.bulletIndex++] = new Bullet(this.context, this.canvas.width, this.canvas.height, this.x + (this.width / 2 - 1), this.y, this.bulletDirection);
+            // }
         });
         kd.run(function () {
             kd.tick();
@@ -44,30 +64,37 @@ class Player {
 
     moveRight() {
         if (this.x < this.canvas.width - this.width) {
-            this.x += this.xVel;
+            this.x += this.velocity.x;
         }
     }
 
     moveLeft() {
         if (this.x > 0) {
-            this.x -= this.xVel;
+            this.x -= this.velocity.x;
         }
     }
 
     moveUp() {
         if (this.y > 0) {
-            this.y -= this.yVel;
+            this.y -= this.velocity.y;
         }
     }
 
     moveDown() {
         if (this.y < this.canvas.height - this.height) {
-            this.y += this.yVel;
+            this.y += this.velocity.y;
         }
     }
 
     update() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        if (this.bullets.length > 0) {
+            this.bullets.forEach((bullet, index) => {
+                if (bullet.y <= 0) {
+                    this.bullets.splice(index, 1);
+                }
+                bullet.update();
+            })
+        }
         this.draw();
     }
 }
